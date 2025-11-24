@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <main class="container">
+        <form id="registrationForm" novalidate>
+            <h1>User Registration</h1>
+
+            <label for="fullname"> Full name </label>
+            <input id="fullname" name="fullname" type="text" placeholder="Your full name" required>
+            <div class="error" id="err-fullname" aria-live="polite"></div>
+
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required>
+            <div class="error" id="err-email" aria-live="polite"></div>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="At least 8 characters" minlength="8" required>
+            <div class="error" id="err-password" aria-live="polite"></div>
+
+            <label for="confirmPassword">Confirm password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Re-enter password" required>
+            <div class="error" id="err-confirm" aria-live="polite"></div>
+
+            <label for="dob">Date of birth</label>
+            <input id="dob" name="dob" type="date">
+
+            <fieldset class="radio-group">
+                <legend>Gender</legend>
+                <label><input type="radio" name="gender" value="female"> Female</label>
+                <label><input type="radio" name="gender" value="male"> Male</label>
+                <label><input type="radio" name="gender" value="other"> Other</label>
+            </fieldset>
+
+            <button type="submit" class="btn">Create account</button>
+
+            <div class="success" id="successMsg" aria-live="polite" hidden></div>
+        </form>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+        const form = document.getElementById('registrationForm');
+        const successMsg = document.getElementById('successMsg');
+
+        function showError(id, message){
+            const el = document.getElementById(id);
+            if(el){ el.textContent = message || '' }
+        }
+
+        function validate(){
+            let ok = true;
+            showError('err-fullname','');
+            showError('err-email','');
+            showError('err-password','');
+            showError('err-confirm','');
+            showError('err-terms','');
+            successMsg.hidden = true;
+
+            const fullname = form.fullname.value.trim();
+            const email = form.email.value.trim();
+            const password = form.password.value;
+            const confirm = form.confirmPassword.value;
+            const terms = form.terms.checked;
+
+            if(!fullname){ showError('err-fullname','Please enter your full name'); ok = false }
+
+            if(!email){ showError('err-email','Please enter your email'); ok = false }
+            else{
+                // simple email test
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if(!re.test(email)){ showError('err-email','Please enter a valid email'); ok = false }
+            }
+
+            if(!password){ showError('err-password','Please enter a password'); ok = false }
+            else if(password.length < 8){ showError('err-password','Password must be at least 8 characters'); ok = false }
+
+            if(password !== confirm){ showError('err-confirm','Passwords do not match'); ok = false }
+
+            if(!terms){ showError('err-terms','You must agree to the terms'); ok = false }
+
+            return ok;
+        }
+
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            if(validate()){
+                // Simulate successful submission
+                successMsg.textContent = 'Account created successfully!';
+                successMsg.hidden = false;
+                form.reset();
+                // remove any lingering errors
+                showError('err-fullname',''); showError('err-email',''); showError('err-password',''); showError('err-confirm',''); showError('err-terms','');
+            }
+        });
+    });
+
+    </script>
+</body>
+</html>
